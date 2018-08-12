@@ -2,16 +2,16 @@ const path = require("path");
 const PrerenderSPAPlugin = require("prerender-spa-plugin");
 const Renderer = PrerenderSPAPlugin.PuppeteerRenderer;
 
-module.exports = api => {
+module.exports = (api, options) => {
   api.chainWebpack(config => {
     if (options.onlyProduction && process.env.NODE_ENV !== "production") {
       return;
     }
     let rendererConfig = {
-      headless: config.headless,
-      maxConcurrentRoutes: config.parallel ? 4 : 1
+      headless: options.headless,
+      maxConcurrentRoutes: options.parallel ? 4 : 1
     };
-    if (config.useRenderEvent) {
+    if (options.useRenderEvent) {
       rendererConfig["renderAfterDocumentEvent"] = "x-app-rendered";
     }
 
