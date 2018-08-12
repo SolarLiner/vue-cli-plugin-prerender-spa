@@ -83,7 +83,8 @@ Since the plugin configuration object isn't available, it is available here.
 
 #### What it does to your project
 
-The `headless` value of the configuration object is set to the answer to the question.
+The `headless` value of the configuration object is set to the answer to the
+question.
 
 ### Only pre-render for production builds
 
@@ -110,6 +111,27 @@ host of plugins to determine whether to turn on parallel jobs / multi-threading.
 This plugin uses it to tell `prerender-spa-plugin` to render pages concurently
 (meaning in parallel) or not by setting the `maxConcurrentRoutes` parameter to
 either 1 or 4, if the build is respectively single-threaded or multi-threaded.
+
+### Custom configuration
+
+After being invoked, the plugin saves a file named `.prerender-spa.json` in the
+root directory of the project; where you can specify custom options for the
+Puppeteer renderer. It will be merged, and its options will overwrite those set
+by the plugin itself.
+
+Exemple configuration:
+
+```json
+{
+  "renderRoutes": ["/", "/about"],
+  "useRenderEvent": true,
+  "headless": true,
+  "onlyProduction": true,
+  "customRendererConfig": {
+    "renderAfterDocumentEvent": "my-custom-event"
+  }
+}
+```
 
 ## Contributing
 
