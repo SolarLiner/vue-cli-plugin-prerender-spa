@@ -25,8 +25,7 @@ module.exports = (api, options) => {
       );
       if (!mainFileLines[vueRenderIndex].endsWith(","))
         mainFileLines[vueRenderIndex] += ",";
-      mainFileLines[vueRenderIndex] +=
-        '\n  mounted: () => document.dispatch(new Event("x-app-rendered")),';
+      mainFileLines[vueRenderIndex] += '\n  mounted: () => document.dispatchEvent(new Event("x-app-rendered")),';
       fs.writeFileSync(mainPath, mainFileLines.reverse().join("\n"), {
         encoding: "utf-8"
       });
