@@ -17,7 +17,7 @@ module.exports = [
     name: "useRenderEvent",
     type: "confirm",
     message: "Use a render event to trigger the snapshot?",
-    default: false
+    default: true
   },
   {
     name: "headless",
