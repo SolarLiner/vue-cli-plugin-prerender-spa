@@ -25,8 +25,13 @@ module.exports = (api, projectOptions) => {
 
     config.plugin("pre-render").use(PrerenderSPAPlugin, [
       {
-        staticDir: api.resolve(config.assetsDir),
-        indexPath: api.resolve(config.indexPath),
+        outputDir: api.resolve(projectOptions.outputDir),
+        assetsDir: api.resolve(
+          path.join(projectOptions.outputDir, projectOptions.assetsDir)
+        ),
+        indexPath: api.resolve(
+          path.join(projectOptions.outputDir, projectOptions.indexPath)
+        ),
         routes: options.renderRoutes,
         renderer: new Renderer(rendererConfig)
       }
