@@ -73,7 +73,7 @@ covers a vast majority of projects where the main file isn't touched.
 ### Use a headless browser for rendering
 
 ```bash
-? Use a headless browser to render the application (recommended) Yes
+? Use a headless browser to render the application? (recommended) Yes
 ```
 
 This option is there for debugging purposes, but **should not be enabled**
