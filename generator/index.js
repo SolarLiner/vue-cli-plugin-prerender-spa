@@ -7,22 +7,8 @@ module.exports = (api, options) => {
 
   api.onCreateComplete(() => {
     const fs = require("fs");
-    const stringify = require("./stringify");
-
-    const vueConfPath = api.resolve("./vue.config.js");
-    const vueConfig = require(vueConfPath);
-    vueConfig["prerender-spa"] = options;
-    const vueConfigLines = fs
-      .readFileSync(vueConfPath, { encoding: "utf-8" })
-      .split(/\r?\n/g)
-      .reverse();
-    const exportLine = vueConfigLines.findIndex(value =>
-      value.startsWith("module.exports = ")
-    );
-    const newVueConfigLines = vueConfigLines
-      .slice(0, exportLine - 1);
-    newVueConfigLines.push("module.exports = " + stringify(vueConfig));
-    fs.writeFileSync(vueConfPath, newVueConfigLines.join("\n"), {
+    const configPath = api.resolve("./.prerender-spa.json");
+    fs.writeFileSync(configPath, JSON.stringify(options), {
       encoding: "utf-8"
     });
 
