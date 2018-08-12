@@ -100,6 +100,17 @@ However, there may be cases where you want to test the pre-rendering itself,
 and switching to a production build isn't the solution - you may then turn off
 that option.
 
+### Indirect options
+
+#### Parallel / Mutli-threaded
+
+This option is configured from within the Vue CLI itself, but serves to a whole
+host of plugins to determine whether to turn on parallel jobs / multi-threading.
+
+This plugin uses it to tell `prerender-spa-plugin` to render pages concurently
+(meaning in parallel) or not by setting the `maxConcurrentRoutes` parameter to
+either 1 or 4, if the build is respectively single-threaded or multi-threaded.
+
 ## Contributing
 
 You are very welcome to contribute. To ask for a feature, or submit a bug, use
