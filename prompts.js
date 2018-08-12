@@ -10,10 +10,7 @@ module.exports = [
     filter: input =>
       new Promise((resolve, reject) => {
         const dataArray = input.split(",").map(value => value.trim());
-        const dataUnique = dataArray.filter((value, pos, self) => {
-          return self.indexOf(value) === pos;
-        })
-        resolve(dataUnique);
+        resolve(dataArray);
       })
   },
   {

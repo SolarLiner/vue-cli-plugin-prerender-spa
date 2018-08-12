@@ -73,7 +73,7 @@ covers a vast majority of projects where the main file isn't touched.
 ### Use a headless browser for rendering
 
 ```bash
-? Use a headless browser to render the application (recommended) Yes
+? Use a headless browser to render the application? (recommended) Yes
 ```
 
 This option is there for debugging purposes, but **should not be enabled**
@@ -83,7 +83,8 @@ Since the plugin configuration object isn't available, it is available here.
 
 #### What it does to your project
 
-The `headless` value of the configuration object is set to the answer to the question.
+The `headless` value of the configuration object is set to the answer to the
+question.
 
 ### Only pre-render for production builds
 
@@ -99,6 +100,38 @@ and not memory-intensive; which is exactly what this plugin does to your build.
 However, there may be cases where you want to test the pre-rendering itself,
 and switching to a production build isn't the solution - you may then turn off
 that option.
+
+### Indirect options
+
+#### Parallel / Mutli-threaded
+
+This option is configured from within the Vue CLI itself, but serves to a whole
+host of plugins to determine whether to turn on parallel jobs / multi-threading.
+
+This plugin uses it to tell `prerender-spa-plugin` to render pages concurently
+(meaning in parallel) or not by setting the `maxConcurrentRoutes` parameter to
+either 1 or 4, if the build is respectively single-threaded or multi-threaded.
+
+### Custom configuration
+
+After being invoked, the plugin saves a file named `.prerender-spa.json` in the
+root directory of the project; where you can specify custom options for the
+Puppeteer renderer. It will be merged, and its options will overwrite those set
+by the plugin itself.
+
+Exemple configuration:
+
+```json
+{
+  "renderRoutes": ["/", "/about"],
+  "useRenderEvent": true,
+  "headless": true,
+  "onlyProduction": true,
+  "customRendererConfig": {
+    "renderAfterDocumentEvent": "my-custom-event"
+  }
+}
+```
 
 ## Contributing
 
