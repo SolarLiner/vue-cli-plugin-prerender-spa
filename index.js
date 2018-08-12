@@ -2,7 +2,8 @@ const path = require("path");
 const PrerenderSPAPlugin = require("prerender-spa-plugin");
 const Renderer = PrerenderSPAPlugin.PuppeteerRenderer;
 
-module.exports = (api, options) => {
+module.exports = (api, projectOptions) => {
+  const options = projectOptions["prerender-spa"];
   api.chainWebpack(config => {
     if (options.onlyProduction && process.env.NODE_ENV !== "production") {
       return;
