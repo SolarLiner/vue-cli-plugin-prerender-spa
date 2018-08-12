@@ -15,6 +15,10 @@ module.exports = (api, options) => {
       rendererConfig["renderAfterDocumentEvent"] = "x-app-rendered";
     }
 
+    if (options.customRendererConfig) {
+      Object.assign(rendererConfig, options.customRendererConfig);
+    }
+
     config.plugin("pre-render").use(PrerenderSPAPlugin, [
       {
         staticDir: api.resolve("./dist"),
