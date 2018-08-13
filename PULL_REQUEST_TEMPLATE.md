@@ -6,5 +6,5 @@
 
 **How**:
 
-[ ] I am working based off of `develop`
-[ ] I have rebased my PR off of `develop`
+- [ ] I am working based off of `develop`
+- [ ] I have rebased my PR off of `develop`
