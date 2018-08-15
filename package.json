@@ -3,7 +3,10 @@
   "version": "1.0.1",
   "description": "Vue CLI plugin to add prerendering to your application",
   "main": "index.js",
-  "author": "Nathan Graule",
+  "author": {
+    "name": "Nathan Graule",
+    "email": "solarliner@gmail.com",
+  },
   "license": "MIT",
   "private": false,
   "dependencies": {
