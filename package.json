@@ -8,6 +8,14 @@
     "email": "solarliner@gmail.com",
   },
   "license": "MIT",
+  "keywords": [
+    "vuejs",
+    "vue-cli",
+    "plugin",
+    "prerender",
+    "SPA"
+
+  ]
   "private": false,
   "dependencies": {
     "javascript-stringify": "^1.6.0",
