@@ -8,6 +8,7 @@
     "email": "solarliner@gmail.com",
   },
   "license": "MIT",
+  "repository": "https://github.com/SolarLiner/vue-cli-plugin-prerender-spa",
   "keywords": [
     "vuejs",
     "vue-cli",
