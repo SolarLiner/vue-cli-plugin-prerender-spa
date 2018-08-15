@@ -76,7 +76,7 @@ covers a vast majority of projects where the main file isn't touched.
 ? Use a headless browser to render the application? (recommended) Yes
 ```
 
-This option is there for debugging purposes, but **should not be enabled**
+This option is there for debugging purposes, but **should be left enabled**
 otherwise. Not using a headless browser will open a Chrome window when building
 with your app running inside, then close once the snapshot has been taken.
 Since the plugin configuration object isn't available, it is available here.

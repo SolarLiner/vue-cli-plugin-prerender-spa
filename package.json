@@ -3,8 +3,20 @@
   "version": "1.0.1",
   "description": "Vue CLI plugin to add prerendering to your application",
   "main": "index.js",
-  "author": "Nathan Graule",
+  "author": {
+    "name": "Nathan Graule",
+    "email": "solarliner@gmail.com",
+  },
   "license": "MIT",
+  "repository": "https://github.com/SolarLiner/vue-cli-plugin-prerender-spa",
+  "keywords": [
+    "vuejs",
+    "vue-cli",
+    "plugin",
+    "prerender",
+    "SPA"
+
+  ]
   "private": false,
   "dependencies": {
     "javascript-stringify": "^1.6.0",
