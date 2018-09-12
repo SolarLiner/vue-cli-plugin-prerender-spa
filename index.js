@@ -22,6 +22,15 @@ module.exports = (api, projectOptions) => {
     if (options.customRendererConfig) {
       Object.assign(rendererConfig, options.customRendererConfig);
     }
+    if (options.deferScripts) {
+      rendererConfig.postProcess = route => {
+        route.html = route.html
+          .replace(/<script (.*?)>/g, "<script $1 defer>")
+          .replace('id="app"', 'id="app" data-server-rendered="true"');
+
+        return route;
+      };
+    }
 
     config.plugin("pre-render").use(PrerenderSPAPlugin, [
       {

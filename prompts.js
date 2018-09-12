@@ -20,15 +20,21 @@ module.exports = [
     default: true
   },
   {
-    name: "headless",
+    name: "deferScripts",
     type: "confirm",
-    message: "Use a headless browser to render the application? (recommended)",
+    message: "Defer scripts parsing? (decreases TTI, recommended)",
     default: true
   },
   {
     name: "onlyProduction",
     type: "confirm",
     message: "Only use prerendering for production builds? (recommended)",
+    default: true
+  },
+  {
+    name: "headless",
+    type: "confirm",
+    message: "Use a headless browser to render the application? (recommended)",
     default: true
   }
 ];
