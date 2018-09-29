@@ -24,17 +24,29 @@ module.exports = (api, projectOptions) => {
     }
     
     const renderer = new Renderer(rendererConfig);
-    if (projectOptions.baseUrl) {
-      renderer.preServer = (Prerenderer) => {
+    renderer.preServer = (Prerenderer) => {
+      if (projectOptions.baseUrl) {
         const prefix = projectOptions.baseUrl;
-        Prerenderer._server._expressServer.use((req, res, next) => {
+        const server = Prerenderer._server._expressServer;
+        server.use((req, res, next) => {
           if (req.url.indexOf(prefix) === 0) {
             req.url = req.url.slice(prefix.length - 1);
           }
           next();
         });
-      };
-    }
+      }
+      if (projectOptions.pages) {
+        const server = Prerenderer._server._expressServer;
+        server.get('*', (req, res, next) => {
+          if (!path.extname(req.url)) {
+            const filePath = api.resolve(`${projectOptions.outputDir}${req.url}${path.basename(req.url) ? '.html' : 'index.html'}`);
+            fs.exists(filePath, (exists) => exists ? res.sendFile(filePath) : next());
+            return;
+          }
+          next();
+        })
+      }
+    };
 
     config.plugin("pre-render").use(PrerenderSPAPlugin, [
       {
