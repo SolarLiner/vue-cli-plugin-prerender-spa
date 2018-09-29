@@ -22,6 +22,19 @@ module.exports = (api, projectOptions) => {
     if (options.customRendererConfig) {
       Object.assign(rendererConfig, options.customRendererConfig);
     }
+    
+    const renderer = new Renderer(rendererConfig);
+    if (projectOptions.baseUrl) {
+      renderer.preServer = (Prerenderer) => {
+        const prefix = projectOptions.baseUrl;
+        Prerenderer._server._expressServer.use((req, res, next) => {
+          if (req.url.indexOf(prefix) === 0) {
+            req.url = req.url.slice(prefix.length - 1);
+          }
+          next();
+        });
+      };
+    }
 
     config.plugin("pre-render").use(PrerenderSPAPlugin, [
       {
@@ -34,7 +47,7 @@ module.exports = (api, projectOptions) => {
           path.join(projectOptions.outputDir, projectOptions.indexPath)
         ),
         routes: options.renderRoutes,
-        renderer: new Renderer(rendererConfig)
+        renderer
       }
     ]);
   });
