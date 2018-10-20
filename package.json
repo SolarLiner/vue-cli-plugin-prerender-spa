@@ -5,7 +5,7 @@
   "main": "index.js",
   "author": {
     "name": "Nathan Graule",
-    "email": "solarliner@gmail.com",
+    "email": "solarliner@gmail.com"
   },
   "license": "MIT",
   "repository": "https://github.com/SolarLiner/vue-cli-plugin-prerender-spa",
@@ -15,8 +15,7 @@
     "plugin",
     "prerender",
     "SPA"
-
-  ]
+  ],
   "private": false,
   "dependencies": {
     "javascript-stringify": "^1.6.0",
