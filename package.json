@@ -1,6 +1,6 @@
 {
   "name": "vue-cli-plugin-prerender-spa",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Vue CLI plugin to add prerendering to your application",
   "main": "index.js",
   "author": {
@@ -15,7 +15,6 @@
     "plugin",
     "prerender",
     "SPA"
-
   ],
   "private": false,
   "dependencies": {
