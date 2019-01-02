@@ -47,7 +47,7 @@ uploaded data, public profiles, etc.). For example you can add your about page
 as well as a contact page - those will load faster, and will be indexed by bots
 who do not execute JavaScript, improving Search Engines rankings.
 
-Note that if you want to also pre-render user generated content, you *will*
+Note that if you want to also pre-render user generated content, you _will_
 have to switch to Server-Side Rendering, there are no other options.
 
 #### What it does to your project
@@ -156,6 +156,39 @@ throughput.
 
 ## Notices
 
+### Backend routing configuration for deployments
+
+Since the `index.html` is now (most likely, depending on your list of routes)
+pre-rendered, pointing to it from another path will lead to whiteflashing as
+the pre-rendered content (of the index page) will not match the expected
+content of the route (say from an about page). For this reason, the plugin
+outputs another file called `app.html` that doesn't get pre-rendered. **For
+better user experience, it is recommended to route non-prerendered routes to
+this file** instead of the default `index.html`.
+
+Here's an example nginx configuration snippet:
+
+```nginx
+location / {
+try_files $url $url/index.html $url.html /app.html
+}
+```
+
+And an example Firebase configuration (taken from https://stackoverflow.com/a/51218261):
+
+```json
+"rewrites": [
+  {
+    "source": "**",
+    "destination": "/app.html"
+  },
+  {
+    "source": "/",
+    "destination": "/index.html"
+  }
+]
+```
+
 ### CI/CD workflows
 
 Because the `prerender-spa-plugin` uses a headless Chrome instance, your
@@ -163,7 +196,7 @@ regular `node:latest` Docker image will not chug your build correctly; you need
 system dependencies and configuration that might not be efficient to add to the
 job itself - rather, it is recommended to switch to a Node.js + Puppeteer
 image where you can just use your `install && build` workflow without any
-additional configuration. I personally use  the `alekzonder/puppeteer` image.
+additional configuration. I personally use the `alekzonder/puppeteer` image.
 
 ### Compatibility with other Vue CLI plugins
 
