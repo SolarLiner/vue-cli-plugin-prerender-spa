@@ -1,15 +1,12 @@
 module.exports = (api, options) => {
-  api.extendPackage({
-    devDependencies: {
-      "prerender-spa-plugin": "^3.2.1"
-    }
-  });
-
   api.onCreateComplete(() => {
     const fs = require("fs");
-    const configPath = api.resolve("./.prerender-spa.json");
-    fs.writeFileSync(configPath, JSON.stringify(options), {
-      encoding: "utf-8"
+
+    fs.exists("./.prerender-spa.json", exists => {
+      if (exists) {
+        Object.assign(options, JSON.parse(fs.readFileSync("./.prerender-spa.json")));
+        fs.unlinkSync("./.prerender-spa.json");
+      }
     });
 
     if (options.useRenderEvent) {
@@ -26,6 +23,17 @@ module.exports = (api, options) => {
       fs.writeFileSync(mainPath, mainFileLines.reverse().join("\n"), {
         encoding: "utf-8"
       });
+    }
+  });
+
+  api.extendPackage({
+    devDependencies: {
+      "prerender-spa-plugin": "^3.2.1"
+    },
+    vue: {
+      pluginOptions: {
+        prerenderSpa: options
+      }
     }
   });
 };
