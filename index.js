@@ -17,7 +17,7 @@ function chain(api, projectOptions) {
     if (options.onlyProduction && process.env.NODE_ENV !== "production") {
       return;
     }
-    const renderer = createRenderer(api);
+    const renderer = createRenderer(api, projectOptions);
     const paths = resolvePaths(projectOptions.outputDir);
     const prerenderOptions = {
       ...paths,
