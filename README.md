@@ -153,11 +153,12 @@ module.exports = {
       useRenderEvent: true,
       headless: true,
       onlyProduction: true,
-      postProcess: html => {
+      postProcess: route => {
         // Defer scripts and tell Vue it's been server rendered to trigger hydration
-        return html
+        route.html = route.html
           .replace(/<script (.*?)>/g, '<script $1 defer>')
           .replace('id="app"', 'id="app" data-server-rendered="true"');
+        return route;
       }
     }
   }
