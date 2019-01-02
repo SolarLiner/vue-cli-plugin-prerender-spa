@@ -129,16 +129,37 @@ root directory of the project; where you can specify custom options for the
 Puppeteer renderer. It will be merged, and its options will overwrite those set
 by the plugin itself.
 
-Example configuration:
+### User post processing function
 
-```json
-{
-  "renderRoutes": ["/", "/about"],
-  "useRenderEvent": true,
-  "headless": true,
-  "onlyProduction": true,
-  "customRendererConfig": {
-    "renderAfterDocumentEvent": "my-custom-event"
+Pupeteer allows to postprocess the HTML after it's been snapshot, and the plugin
+allows you to provide your own function if you need to.
+
+Add a `postProcess` option into your `vue.config.js` file to provide a custom
+post-processing function to run on every build.
+
+Exemple configuration:
+
+```js
+// vue.config.js
+
+module.exports = {
+  pluginOptions: {
+    prerenderSpa: {
+      registry: undefined,
+      renderRoutes: [
+        '/',
+        '/about'
+      ],
+      useRenderEvent: true,
+      headless: true,
+      onlyProduction: true,
+      postProcess: html => {
+        // Defer scripts and tell Vue it's been server rendered to trigger hydration
+        return html
+          .replace(/<script (.*?)>/g, '<script $1 defer>')
+          .replace('id="app"', 'id="app" data-server-rendered="true"');
+      }
+    }
   }
 }
 ```

@@ -28,7 +28,8 @@ function chain(api, projectOptions) {
         if (route[route.length - 1] !== "/" && path.extname(route) === "") {
           renderedRoute.outputPath = path.join(paths.outputDir || paths.staticDir, `${route}.html`);
         }
-        return renderedRoute;
+        const userPostProcess = options.postProcess || noop;
+        return userPostProcess(renderedRoute);
       }
     };
     config.plugin("pre-render").use(PrerenderSPAPlugin, [prerenderOptions]);
@@ -100,4 +101,8 @@ function pickle(object, path) {
     object = object[key];
   }
   return object;
+}
+
+function noop(arg) {
+  return arg;
 }
