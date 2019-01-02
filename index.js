@@ -1,5 +1,5 @@
 //@ts-check
-const { exists } = require("fs");
+const { exists, readFileSync } = require("fs");
 const path = require("path");
 
 const PrerenderSPAPlugin = require("prerender-spa-plugin");
@@ -13,7 +13,16 @@ module.exports = (api, projectOptions) => {
 
 function chain(api, projectOptions) {
   return config => {
-    const options = pickle(projectOptions, CONFIG_OBJ_PATH);
+    let options;
+    try {
+      options = pickle(projectOptions, CONFIG_OBJ_PATH);
+    } catch {
+      exists("./.prerender-spa.json", exists => {
+        if (exists) {
+          Object.assign(options, JSON.parse(readFileSync("./.prerender-spa.json").toString("utf-8")));
+        }
+      });
+    }
     if (options.onlyProduction && process.env.NODE_ENV !== "production") {
       return;
     }
