@@ -28,7 +28,8 @@ function chain(api, projectOptions) {
         if (route[route.length - 1] !== "/" && path.extname(route) === "") {
           renderedRoute.outputPath = path.join(paths.outputDir || paths.staticDir, `${route}.html`);
         }
-        const userPostProcess = options.postProcess || noop;
+        const userPostProcess =
+          options.postProcess && typeof options.postProcess === "function" ? options.postProcess : noop;
         return userPostProcess(renderedRoute);
       }
     };
