@@ -18,7 +18,7 @@ function chain(api, projectOptions) {
       return;
     }
     const renderer = createRenderer(api, projectOptions);
-    const paths = resolvePaths(api, projectOptions.outputDir, projectOptions.assetsDir, projectOptions.indexPath);
+    const paths = resolvePaths(api, projectOptions.outputDir, projectOptions.assetsDir);
     const prerenderOptions = {
       ...paths,
       routes: options.renderRoutes,
@@ -32,6 +32,11 @@ function chain(api, projectOptions) {
       }
     };
     config.plugin("pre-render").use(PrerenderSPAPlugin, [prerenderOptions]);
+    config.plugin("html").tap(args => {
+      args[0].template = api.resolve("public/index.html");
+      args[0].filename = "app.html";
+      return args;
+    });
   };
 }
 
@@ -80,12 +85,12 @@ function createConfig(options) {
   return rendererConfig;
 }
 
-function resolvePaths(api, baseUrl, assetsDir, indexPath) {
+function resolvePaths(api, baseUrl, assetsDir) {
   return {
     outputDir: api.resolve(baseUrl),
     staticDir: api.resolve(baseUrl),
     assetsDir: api.resolve(path.join(baseUrl, assetsDir)),
-    indexPath: api.resolve(path.join(baseUrl, indexPath))
+    indexPath: api.resolve(path.join(baseUrl, "app.html"))
   };
 }
 
