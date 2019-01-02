@@ -2,7 +2,7 @@ module.exports = [
   {
     name: "renderRoutes",
     type: "input",
-    message: "Which routes to pre-render? (list them separated by a comma)",
+    message: "Which routes to pre-render? (separate with comma) (only with Vue Router history mode)",
     default: "/",
     /**
      * @param {String} input

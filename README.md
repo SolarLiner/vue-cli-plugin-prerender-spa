@@ -2,6 +2,16 @@
 
 Add `prerender-spa-plugin` into your Vue application with zero configuration.
 
+**Looking for a co-maintainer**: I'm continuing to maintain this project, hoever
+I still would like help on some of the issues, and generally to help me keep this
+plugin going as it's getting more and more popular. If you think you can help,
+file and issue for maintainship!
+
+**Support requests**: Vue has a Discord server and I often lurk in there. And
+while there is a support label in the Issues, GitHub isn't the place for support
+requests and should be directed to me in the
+[Vue Land Discord server](https://vue-land.js.org).
+
 ## Install
 
 Add prerendering to your Vue application with:
@@ -16,7 +26,7 @@ You'll be asked a few questions, detailed below, to which the default answers
 are the most common options.
 
 The main option to fit to your needs is the **list of routes to pre-render**.
-Speccify them as a comma-separated list:
+Specify them as a comma-separated list:
 
 ```bash
 ? Which routes to pre-render? (list them separated by a comma) /,/about,/contact
@@ -35,9 +45,9 @@ rendered, which should cover most SPAs. If your project uses vue-router, you
 can specify a list of routes that do not depend on dynamic content (like user
 uploaded data, public profiles, etc.). For example you can add your about page
 as well as a contact page - those will load faster, and will be indexed by bots
-who do not execute JavaScript, improving Search Engines rankigs.
+who do not execute JavaScript, improving Search Engines rankings.
 
-Note that if you want to also pre-render user generated content, you *will*
+Note that if you want to also pre-render user generated content, you _will_
 have to switch to Server-Side Rendering, there are no other options.
 
 #### What it does to your project
@@ -62,7 +72,7 @@ realizing what's happening.
 
 When enabling the event-based snapshot trigger, it will tell
 `PrerenderSPAPlugin` to listen for an `x-app-rendered` event. Your main file
-is then modified to add a `mounted()` hook where the even will fire. Note that
+is then modified to add a `mounted()` hook where the event will fire. Note that
 it doesn't check if the hook is already present, nor does it parses the file;
 it just looks for the line starting with `render:` (minus whitespaces) and
 inserts the `mounted()` hook below. If you already have the hook set up, or if
@@ -108,7 +118,7 @@ that option.
 This option is configured from within the Vue CLI itself, but serves to a whole
 host of plugins to determine whether to turn on parallel jobs / multi-threading.
 
-This plugin uses it to tell `prerender-spa-plugin` to render pages concurently
+This plugin uses it to tell `prerender-spa-plugin` to render pages concurrently
 (meaning in parallel) or not by setting the `maxConcurrentRoutes` parameter to
 either 1 or 4, if the build is respectively single-threaded or multi-threaded.
 
@@ -119,16 +129,38 @@ root directory of the project; where you can specify custom options for the
 Puppeteer renderer. It will be merged, and its options will overwrite those set
 by the plugin itself.
 
+### User post processing function
+
+Pupeteer allows to postprocess the HTML after it's been snapshot, and the plugin
+allows you to provide your own function if you need to.
+
+Add a `postProcess` option into your `vue.config.js` file to provide a custom
+post-processing function to run on every build.
+
 Exemple configuration:
 
-```json
-{
-  "renderRoutes": ["/", "/about"],
-  "useRenderEvent": true,
-  "headless": true,
-  "onlyProduction": true,
-  "customRendererConfig": {
-    "renderAfterDocumentEvent": "my-custom-event"
+```js
+// vue.config.js
+
+module.exports = {
+  pluginOptions: {
+    prerenderSpa: {
+      registry: undefined,
+      renderRoutes: [
+        '/',
+        '/about'
+      ],
+      useRenderEvent: true,
+      headless: true,
+      onlyProduction: true,
+      postProcess: route => {
+        // Defer scripts and tell Vue it's been server rendered to trigger hydration
+        route.html = route.html
+          .replace(/<script (.*?)>/g, '<script $1 defer>')
+          .replace('id="app"', 'id="app" data-server-rendered="true"');
+        return route;
+      }
+    }
   }
 }
 ```
@@ -146,14 +178,47 @@ throughput.
 
 ## Notices
 
+### Backend routing configuration for deployments
+
+Since the `index.html` is now (most likely, depending on your list of routes)
+pre-rendered, pointing to it from another path will lead to whiteflashing as
+the pre-rendered content (of the index page) will not match the expected
+content of the route (say from an about page). For this reason, the plugin
+outputs another file called `app.html` that doesn't get pre-rendered. **For
+better user experience, it is recommended to route non-prerendered routes to
+this file** instead of the default `index.html`.
+
+Here's an example nginx configuration snippet:
+
+```nginx
+location / {
+try_files $url $url/index.html $url.html /app.html
+}
+```
+
+And an example Firebase configuration (taken from https://stackoverflow.com/a/51218261):
+
+```json
+"rewrites": [
+  {
+    "source": "**",
+    "destination": "/app.html"
+  },
+  {
+    "source": "/",
+    "destination": "/index.html"
+  }
+]
+```
+
 ### CI/CD workflows
 
 Because the `prerender-spa-plugin` uses a headless Chrome instance, your
 regular `node:latest` Docker image will not chug your build correctly; you need
 system dependencies and configuration that might not be efficient to add to the
-job itself - rather, it is recommended to switch to a Node.js + Puppetteer
+job itself - rather, it is recommended to switch to a Node.js + Puppeteer
 image where you can just use your `install && build` workflow without any
-additional configuration. I personally use  the `alekzonder/puppeteer` image.
+additional configuration. I personally use the `alekzonder/puppeteer` image.
 
 ### Compatibility with other Vue CLI plugins
 
