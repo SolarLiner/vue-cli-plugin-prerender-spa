@@ -13,17 +13,7 @@ module.exports = (api, projectOptions) => {
 
 function chain(api, projectOptions) {
   return config => {
-    let options;
-    try {
-      options = pickle(projectOptions, CONFIG_OBJ_PATH);
-    } catch {
-      if (existsSync) {
-        options = JSON.parse(readFileSync("./.prerender-spa.json").toString("utf-8"));
-      }
-    }
-    if (options.onlyProduction && process.env.NODE_ENV !== "production") {
-      return;
-    }
+    const options = createOptions(projectOptions);
     const renderer = createRenderer(api, projectOptions);
     const paths = resolvePaths(api, projectOptions.outputDir, projectOptions.assetsDir);
     const prerenderOptions = {
@@ -50,7 +40,7 @@ function chain(api, projectOptions) {
 }
 
 function createRenderer(api, projectOptions) {
-  const rendererConfig = createConfig(pickle(projectOptions, CONFIG_OBJ_PATH));
+  const rendererConfig = createConfig(projectOptions);
   const renderer = new Renderer(rendererConfig);
   renderer.preServer = Prerenderer => {
     if (projectOptions.baseUrl) {
@@ -80,7 +70,11 @@ function createRenderer(api, projectOptions) {
   return renderer;
 }
 
-function createConfig(options) {
+function createConfig(projectOptions) {
+  let options = createOptions(projectOptions);
+  if (options.onlyProduction && process.env.NODE_ENV !== "production") {
+    return;
+  }
   let rendererConfig = {
     headless: options.headless,
     maxConcurrentRoutes: options.parallel ? 4 : 1
@@ -92,6 +86,19 @@ function createConfig(options) {
     Object.assign(rendererConfig, options.customRendererConfig);
   }
   return rendererConfig;
+}
+
+function createOptions(projectOptions) {
+  let options;
+  try {
+    options = pickle(projectOptions, CONFIG_OBJ_PATH);
+  }
+  catch {
+    if (existsSync("./.prerender-spa.json")) {
+      options = JSON.parse(readFileSync("./.prerender-spa.json").toString("utf-8"));
+    }
+  }
+  return options;
 }
 
 function resolvePaths(api, baseUrl, assetsDir) {
