@@ -4,7 +4,7 @@ const Renderer = PrerenderSPAPlugin.PuppeteerRenderer;
 
 module.exports = (api, projectOptions) => {
   const fs = require("fs");
-  const options = JSON.parse(fs.readFileSync(api.resolve("./.prerender-spa.json", { encoding: "utf-8" })));
+  const options = projectOptions.prerendering;
   api.chainWebpack(config => {
     if (options.onlyProduction && process.env.NODE_ENV !== "production") {
       return;
