@@ -2,6 +2,11 @@
 
 Add `prerender-spa-plugin` into your Vue application with zero configuration.
 
+**Looking for a co-maintainer**: I'm continuing to maintain this project, hoever
+I still would like help on some of the issues, and generally to help me keep this
+plugin going as it's getting more and more popular. If you think you can help,
+file and issue for maintainship!
+
 **Support requests**: Vue has a Discord server and I often lurk in there. And
 while there is a support label in the Issues, GitHub isn't the place for support
 requests and should be directed to me in the
