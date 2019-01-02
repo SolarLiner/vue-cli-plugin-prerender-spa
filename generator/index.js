@@ -20,11 +20,8 @@ module.exports = (api, options) => {
         .readFileSync(mainPath, { encoding: "utf-8" })
         .split(/\r?\n/g)
         .reverse();
-      const vueRenderIndex = mainFileLines.findIndex(line =>
-        line.match(/render\:/)
-      );
-      if (!mainFileLines[vueRenderIndex].endsWith(","))
-        mainFileLines[vueRenderIndex] += ",";
+      const vueRenderIndex = mainFileLines.findIndex(line => line.match(/render\:/));
+      if (!mainFileLines[vueRenderIndex].endsWith(",")) mainFileLines[vueRenderIndex] += ",";
       mainFileLines[vueRenderIndex] += '\n  mounted: () => document.dispatchEvent(new Event("x-app-rendered")),';
       fs.writeFileSync(mainPath, mainFileLines.reverse().join("\n"), {
         encoding: "utf-8"

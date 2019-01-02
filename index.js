@@ -4,9 +4,7 @@ const Renderer = PrerenderSPAPlugin.PuppeteerRenderer;
 
 module.exports = (api, projectOptions) => {
   const fs = require("fs");
-  const options = JSON.parse(
-    fs.readFileSync(api.resolve("./.prerender-spa.json", { encoding: "utf-8" }))
-  );
+  const options = JSON.parse(fs.readFileSync(api.resolve("./.prerender-spa.json", { encoding: "utf-8" })));
   api.chainWebpack(config => {
     if (options.onlyProduction && process.env.NODE_ENV !== "production") {
       return;
@@ -22,9 +20,9 @@ module.exports = (api, projectOptions) => {
     if (options.customRendererConfig) {
       Object.assign(rendererConfig, options.customRendererConfig);
     }
-  
+
     const renderer = new Renderer(rendererConfig);
-    renderer.preServer = (Prerenderer) => {
+    renderer.preServer = Prerenderer => {
       if (projectOptions.baseUrl) {
         const prefix = projectOptions.baseUrl;
         const server = Prerenderer._server._expressServer;
@@ -37,14 +35,16 @@ module.exports = (api, projectOptions) => {
       }
       if (projectOptions.pages) {
         const server = Prerenderer._server._expressServer;
-        server.get('*', (req, res, next) => {
+        server.get("*", (req, res, next) => {
           if (!path.extname(req.url)) {
-            const filePath = api.resolve(`${projectOptions.outputDir}${req.url}${path.basename(req.url) ? '.html' : 'index.html'}`);
-            fs.exists(filePath, (exists) => exists ? res.sendFile(filePath) : next());
+            const filePath = api.resolve(
+              `${projectOptions.outputDir}${req.url}${path.basename(req.url) ? ".html" : "index.html"}`
+            );
+            fs.exists(filePath, exists => (exists ? res.sendFile(filePath) : next()));
             return;
           }
           next();
-        })
+        });
       }
     };
 
@@ -53,26 +53,20 @@ module.exports = (api, projectOptions) => {
     const prerenderOptions = {
       outputDir,
       staticDir,
-      assetsDir: api.resolve(
-        path.join(projectOptions.outputDir, projectOptions.assetsDir)
-      ),
-      indexPath: api.resolve(
-        path.join(projectOptions.outputDir, projectOptions.indexPath)
-      ),
+      assetsDir: api.resolve(path.join(projectOptions.outputDir, projectOptions.assetsDir)),
+      indexPath: api.resolve(path.join(projectOptions.outputDir, projectOptions.indexPath)),
       routes: options.renderRoutes,
       renderer
     };
 
-    prerenderOptions.postProcess = (renderedRoute) => {
+    prerenderOptions.postProcess = renderedRoute => {
       const route = renderedRoute.route;
-      if (route[route.length - 1] !== '/' && path.extname(route) === '') {
-        renderedRoute.outputPath = path.join(outputDir || staticDir, `${route}.html`)
+      if (route[route.length - 1] !== "/" && path.extname(route) === "") {
+        renderedRoute.outputPath = path.join(outputDir || staticDir, `${route}.html`);
       }
       return renderedRoute;
-    }
+    };
 
-    config.plugin("pre-render").use(PrerenderSPAPlugin, [
-      prerenderOptions
-    ]);
+    config.plugin("pre-render").use(PrerenderSPAPlugin, [prerenderOptions]);
   });
 };
