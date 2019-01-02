@@ -21,7 +21,7 @@ You'll be asked a few questions, detailed below, to which the default answers
 are the most common options.
 
 The main option to fit to your needs is the **list of routes to pre-render**.
-Speccify them as a comma-separated list:
+Specify them as a comma-separated list:
 
 ```bash
 ? Which routes to pre-render? (list them separated by a comma) /,/about,/contact
@@ -40,7 +40,7 @@ rendered, which should cover most SPAs. If your project uses vue-router, you
 can specify a list of routes that do not depend on dynamic content (like user
 uploaded data, public profiles, etc.). For example you can add your about page
 as well as a contact page - those will load faster, and will be indexed by bots
-who do not execute JavaScript, improving Search Engines rankigs.
+who do not execute JavaScript, improving Search Engines rankings.
 
 Note that if you want to also pre-render user generated content, you *will*
 have to switch to Server-Side Rendering, there are no other options.
@@ -67,7 +67,7 @@ realizing what's happening.
 
 When enabling the event-based snapshot trigger, it will tell
 `PrerenderSPAPlugin` to listen for an `x-app-rendered` event. Your main file
-is then modified to add a `mounted()` hook where the even will fire. Note that
+is then modified to add a `mounted()` hook where the event will fire. Note that
 it doesn't check if the hook is already present, nor does it parses the file;
 it just looks for the line starting with `render:` (minus whitespaces) and
 inserts the `mounted()` hook below. If you already have the hook set up, or if
@@ -113,7 +113,7 @@ that option.
 This option is configured from within the Vue CLI itself, but serves to a whole
 host of plugins to determine whether to turn on parallel jobs / multi-threading.
 
-This plugin uses it to tell `prerender-spa-plugin` to render pages concurently
+This plugin uses it to tell `prerender-spa-plugin` to render pages concurrently
 (meaning in parallel) or not by setting the `maxConcurrentRoutes` parameter to
 either 1 or 4, if the build is respectively single-threaded or multi-threaded.
 
@@ -124,7 +124,7 @@ root directory of the project; where you can specify custom options for the
 Puppeteer renderer. It will be merged, and its options will overwrite those set
 by the plugin itself.
 
-Exemple configuration:
+Example configuration:
 
 ```json
 {
@@ -156,7 +156,7 @@ throughput.
 Because the `prerender-spa-plugin` uses a headless Chrome instance, your
 regular `node:latest` Docker image will not chug your build correctly; you need
 system dependencies and configuration that might not be efficient to add to the
-job itself - rather, it is recommended to switch to a Node.js + Puppetteer
+job itself - rather, it is recommended to switch to a Node.js + Puppeteer
 image where you can just use your `install && build` workflow without any
 additional configuration. I personally use  the `alekzonder/puppeteer` image.
 
