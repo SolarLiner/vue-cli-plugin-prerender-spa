@@ -21,7 +21,7 @@ function chain(api, projectOptions) {
     const paths = resolvePaths(api, projectOptions.outputDir, projectOptions.assetsDir, projectOptions.indexPath);
     const prerenderOptions = {
       ...paths,
-      routes: pickle(projectOptions, CONFIG_OBJ_PATH),
+      routes: options.renderRoutes,
       renderer,
       postProcess: renderedRoute => {
         const route = renderedRoute.route;
