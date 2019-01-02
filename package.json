@@ -16,6 +16,11 @@
     "prerender",
     "SPA"
   ],
+  "files": [
+    "index.js",
+    "prompts.js",
+    "generator"
+  ],
   "private": false,
   "dependencies": {
     "javascript-stringify": "^1.6.0",
