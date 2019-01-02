@@ -19,7 +19,9 @@
   "files": [
     "index.js",
     "prompts.js",
-    "generator"
+    "generator",
+    "README.md",
+    "LICENSE"
   ],
   "private": false,
   "dependencies": {
