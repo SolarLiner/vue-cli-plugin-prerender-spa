@@ -18,7 +18,12 @@ function chain(api, projectOptions) {
       return;
     }
     const renderer = createRenderer(api, projectOptions);
-    const paths = resolvePaths(api, projectOptions.outputDir);
+    const paths = resolvePaths(
+      api,
+      projectOptions.outputDir,
+      projectOptions.assetsDir,
+      projectOptions.indexPath
+    );
     const prerenderOptions = {
       ...paths,
       routes: pickle(projectOptions, CONFIG_OBJ_PATH),
