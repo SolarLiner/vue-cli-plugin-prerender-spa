@@ -2,13 +2,6 @@ module.exports = (api, options) => {
   api.onCreateComplete(() => {
     const fs = require("fs");
 
-    fs.exists("./.prerender-spa.json", exists => {
-      if (exists) {
-        Object.assign(options, JSON.parse(fs.readFileSync("./.prerender-spa.json")));
-        fs.unlinkSync("./.prerender-spa.json");
-      }
-    });
-
     if (options.useRenderEvent) {
       const ext = api.hasPlugin("typescript") ? "ts" : "js";
       const mainPath = api.resolve(`./src/main.${ext}`);

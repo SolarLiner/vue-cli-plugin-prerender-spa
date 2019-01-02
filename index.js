@@ -1,5 +1,5 @@
 //@ts-check
-const { exists } = require("fs");
+const { exists, existsSync, readFileSync } = require("fs");
 const path = require("path");
 
 const PrerenderSPAPlugin = require("prerender-spa-plugin");
@@ -13,10 +13,7 @@ module.exports = (api, projectOptions) => {
 
 function chain(api, projectOptions) {
   return config => {
-    const options = pickle(projectOptions, CONFIG_OBJ_PATH);
-    if (options.onlyProduction && process.env.NODE_ENV !== "production") {
-      return;
-    }
+    const options = createOptions(api, projectOptions);
     const renderer = createRenderer(api, projectOptions);
     const paths = resolvePaths(api, projectOptions.outputDir, projectOptions.assetsDir);
     const prerenderOptions = {
@@ -43,7 +40,7 @@ function chain(api, projectOptions) {
 }
 
 function createRenderer(api, projectOptions) {
-  const rendererConfig = createConfig(pickle(projectOptions, CONFIG_OBJ_PATH));
+  const rendererConfig = createConfig(api, projectOptions);
   const renderer = new Renderer(rendererConfig);
   renderer.preServer = Prerenderer => {
     if (projectOptions.baseUrl) {
@@ -73,7 +70,11 @@ function createRenderer(api, projectOptions) {
   return renderer;
 }
 
-function createConfig(options) {
+function createConfig(api, projectOptions) {
+  let options = createOptions(api, projectOptions);
+  if (options.onlyProduction && process.env.NODE_ENV !== "production") {
+    return;
+  }
   let rendererConfig = {
     headless: options.headless,
     maxConcurrentRoutes: options.parallel ? 4 : 1
@@ -85,6 +86,23 @@ function createConfig(options) {
     Object.assign(rendererConfig, options.customRendererConfig);
   }
   return rendererConfig;
+}
+
+function createOptions(api, projectOptions) {
+  let options;
+  let oldConfigPath = api.resolve(".prerender-spa.json");
+  try {
+    options = pickle(projectOptions, CONFIG_OBJ_PATH);
+    if (existsSync(oldConfigPath)) {
+      Object.assign(options, JSON.parse(readFileSync(oldConfigPath).toString("utf-8")));
+    }
+  }
+  catch {
+    if (existsSync(oldConfigPath)) {
+      options = JSON.parse(readFileSync(oldConfigPath).toString("utf-8"));
+    }
+  }
+  return options;
 }
 
 function resolvePaths(api, baseUrl, assetsDir) {
