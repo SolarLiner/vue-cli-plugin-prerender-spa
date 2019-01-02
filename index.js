@@ -18,12 +18,7 @@ function chain(api, projectOptions) {
       return;
     }
     const renderer = createRenderer(api, projectOptions);
-    const paths = resolvePaths(
-      api,
-      projectOptions.outputDir,
-      projectOptions.assetsDir,
-      projectOptions.indexPath
-    );
+    const paths = resolvePaths(api, projectOptions.outputDir, projectOptions.assetsDir, projectOptions.indexPath);
     const prerenderOptions = {
       ...paths,
       routes: pickle(projectOptions, CONFIG_OBJ_PATH),
@@ -31,10 +26,7 @@ function chain(api, projectOptions) {
       postProcess: renderedRoute => {
         const route = renderedRoute.route;
         if (route[route.length - 1] !== "/" && path.extname(route) === "") {
-          renderedRoute.outputPath = path.join(
-            paths.outputDir || paths.staticDir,
-            `${route}.html`
-          );
+          renderedRoute.outputPath = path.join(paths.outputDir || paths.staticDir, `${route}.html`);
         }
         return renderedRoute;
       }
@@ -62,13 +54,9 @@ function createRenderer(api, projectOptions) {
       server.get("*", (req, res, next) => {
         if (!path.extname(req.url)) {
           const filePath = api.resolve(
-            `${projectOptions.outputDir}${req.url}${
-              path.basename(req.url) ? ".html" : "index.html"
-            }`
+            `${projectOptions.outputDir}${req.url}${path.basename(req.url) ? ".html" : "index.html"}`
           );
-          exists(filePath, exists =>
-            exists ? res.sendFile(filePath) : next()
-          );
+          exists(filePath, exists => (exists ? res.sendFile(filePath) : next()));
           return;
         }
         next();
