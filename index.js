@@ -13,7 +13,7 @@ module.exports = (api, projectOptions) => {
 
 function chain(api, projectOptions) {
   return config => {
-    const options = createOptions(projectOptions);
+    const options = createOptions(api, projectOptions);
     const renderer = createRenderer(api, projectOptions);
     const paths = resolvePaths(api, projectOptions.outputDir, projectOptions.assetsDir);
     const prerenderOptions = {
@@ -40,7 +40,7 @@ function chain(api, projectOptions) {
 }
 
 function createRenderer(api, projectOptions) {
-  const rendererConfig = createConfig(projectOptions);
+  const rendererConfig = createConfig(api, projectOptions);
   const renderer = new Renderer(rendererConfig);
   renderer.preServer = Prerenderer => {
     if (projectOptions.baseUrl) {
@@ -70,8 +70,8 @@ function createRenderer(api, projectOptions) {
   return renderer;
 }
 
-function createConfig(projectOptions) {
-  let options = createOptions(projectOptions);
+function createConfig(api, projectOptions) {
+  let options = createOptions(api, projectOptions);
   if (options.onlyProduction && process.env.NODE_ENV !== "production") {
     return;
   }
@@ -88,14 +88,18 @@ function createConfig(projectOptions) {
   return rendererConfig;
 }
 
-function createOptions(projectOptions) {
+function createOptions(api, projectOptions) {
   let options;
+  let oldConfigPath = api.resolve(".prerender-spa.json");
   try {
     options = pickle(projectOptions, CONFIG_OBJ_PATH);
+    if (existsSync(oldConfigPath)) {
+      Object.assign(options, JSON.parse(readFileSync(oldConfigPath).toString("utf-8")));
+    }
   }
   catch {
-    if (existsSync("./.prerender-spa.json")) {
-      options = JSON.parse(readFileSync("./.prerender-spa.json").toString("utf-8"));
+    if (existsSync(oldConfigPath)) {
+      options = JSON.parse(readFileSync(oldConfigPath).toString("utf-8"));
     }
   }
   return options;
