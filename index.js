@@ -14,6 +14,9 @@ module.exports = (api, projectOptions) => {
 function chain(api, projectOptions) {
   return config => {
     const options = createOptions(api, projectOptions);
+    if (options.onlyProduction && process.env.NODE_ENV !== "production") {
+      return;
+    }
     const renderer = createRenderer(api, projectOptions);
     const paths = resolvePaths(api, projectOptions.outputDir, projectOptions.assetsDir);
     const prerenderOptions = {
@@ -72,9 +75,6 @@ function createRenderer(api, projectOptions) {
 
 function createConfig(api, projectOptions) {
   let options = createOptions(api, projectOptions);
-  if (options.onlyProduction && process.env.NODE_ENV !== "production") {
-    return;
-  }
   let rendererConfig = {
     headless: options.headless,
     maxConcurrentRoutes: options.parallel ? 4 : 1
