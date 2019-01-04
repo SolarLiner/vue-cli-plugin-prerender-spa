@@ -34,11 +34,13 @@ function chain(api, projectOptions) {
       }
     };
     config.plugin("pre-render").use(PrerenderSPAPlugin, [prerenderOptions]);
-    config.plugin("html").tap(args => {
-      args[0].template = api.resolve("public/index.html");
-      args[0].filename = "app.html";
-      return args;
-    });
+    if (process.env.NODE_ENV === "production") {
+      config.plugin("html").tap(args => {
+        args[0].template = api.resolve("public/index.html");
+        args[0].filename = "app.html";
+        return args;
+      });
+    }
   };
 }
 
@@ -96,8 +98,7 @@ function createOptions(api, projectOptions) {
     if (existsSync(oldConfigPath)) {
       Object.assign(options, JSON.parse(readFileSync(oldConfigPath).toString("utf-8")));
     }
-  }
-  catch {
+  } catch {
     if (existsSync(oldConfigPath)) {
       options = JSON.parse(readFileSync(oldConfigPath).toString("utf-8"));
     }
@@ -110,7 +111,7 @@ function resolvePaths(api, baseUrl, assetsDir) {
     outputDir: api.resolve(baseUrl),
     staticDir: api.resolve(baseUrl),
     assetsDir: api.resolve(path.join(baseUrl, assetsDir)),
-    indexPath: api.resolve(path.join(baseUrl, "app.html"))
+    indexPath: api.resolve(path.join(baseUrl, process.env.NODE_ENV === "production" ? "app.html" : "index.html"))
   };
 }
 
