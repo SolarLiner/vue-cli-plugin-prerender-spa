@@ -13,7 +13,7 @@ module.exports = (api, projectOptions) => {
 
 function chain(api, projectOptions) {
   return config => {
-    const options = createOptions(api, projectOptions);
+    const options = createPluginOptions(api, projectOptions);
     if (options.onlyProduction && process.env.NODE_ENV !== "production") {
       return;
     }
@@ -45,7 +45,7 @@ function chain(api, projectOptions) {
 }
 
 function createRenderer(api, projectOptions) {
-  const rendererConfig = createConfig(api, projectOptions);
+  const rendererConfig = createRendererConfig(api, projectOptions);
   const renderer = new Renderer(rendererConfig);
   renderer.preServer = Prerenderer => {
     if (projectOptions.baseUrl) {
@@ -75,8 +75,8 @@ function createRenderer(api, projectOptions) {
   return renderer;
 }
 
-function createConfig(api, projectOptions) {
-  let options = createOptions(api, projectOptions);
+function createRendererConfig(api, projectOptions) {
+  let options = createPluginOptions(api, projectOptions);
   let rendererConfig = {
     headless: options.headless,
     maxConcurrentRoutes: options.parallel ? 4 : 1
@@ -90,7 +90,7 @@ function createConfig(api, projectOptions) {
   return rendererConfig;
 }
 
-function createOptions(api, projectOptions) {
+function createPluginOptions(api, projectOptions) {
   let options;
   let oldConfigPath = api.resolve(".prerender-spa.json");
   try {
