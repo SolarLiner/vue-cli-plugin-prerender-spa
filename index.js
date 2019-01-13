@@ -13,7 +13,10 @@ module.exports = (api, projectOptions) => {
 
 function chain(api, projectOptions) {
   return config => {
-    const options = createOptions(api, projectOptions);
+    const options = createPluginOptions(api, projectOptions);
+    if (options.onlyProduction && process.env.NODE_ENV !== "production") {
+      return;
+    }
     const renderer = createRenderer(api, projectOptions);
     const paths = resolvePaths(api, projectOptions.outputDir, projectOptions.assetsDir);
     const prerenderOptions = {
@@ -31,16 +34,18 @@ function chain(api, projectOptions) {
       }
     };
     config.plugin("pre-render").use(PrerenderSPAPlugin, [prerenderOptions]);
-    config.plugin("html").tap(args => {
-      args[0].template = api.resolve("public/index.html");
-      args[0].filename = "app.html";
-      return args;
-    });
+    if (process.env.NODE_ENV === "production") {
+      config.plugin("html").tap(args => {
+        args[0].template = api.resolve("public/index.html");
+        args[0].filename = "app.html";
+        return args;
+      });
+    }
   };
 }
 
 function createRenderer(api, projectOptions) {
-  const rendererConfig = createConfig(api, projectOptions);
+  const rendererConfig = createRendererConfig(api, projectOptions);
   const renderer = new Renderer(rendererConfig);
   renderer.preServer = Prerenderer => {
     if (projectOptions.baseUrl) {
@@ -70,11 +75,8 @@ function createRenderer(api, projectOptions) {
   return renderer;
 }
 
-function createConfig(api, projectOptions) {
-  let options = createOptions(api, projectOptions);
-  if (options.onlyProduction && process.env.NODE_ENV !== "production") {
-    return;
-  }
+function createRendererConfig(api, projectOptions) {
+  let options = createPluginOptions(api, projectOptions);
   let rendererConfig = {
     headless: options.headless,
     maxConcurrentRoutes: options.parallel ? 4 : 1
@@ -88,7 +90,7 @@ function createConfig(api, projectOptions) {
   return rendererConfig;
 }
 
-function createOptions(api, projectOptions) {
+function createPluginOptions(api, projectOptions) {
   let options;
   let oldConfigPath = api.resolve(".prerender-spa.json");
   try {
@@ -96,13 +98,13 @@ function createOptions(api, projectOptions) {
     if (existsSync(oldConfigPath)) {
       Object.assign(options, JSON.parse(readFileSync(oldConfigPath).toString("utf-8")));
     }
-  }
-  catch {
+  } catch {
     if (existsSync(oldConfigPath)) {
       options = JSON.parse(readFileSync(oldConfigPath).toString("utf-8"));
     }
   }
-  return options;
+  // return options; // TODO: Fix #16 permanently
+  return Object.assign(options, { onlyProduction: true }); // Force disable on development build, workaround for #16
 }
 
 function resolvePaths(api, baseUrl, assetsDir) {
@@ -110,7 +112,7 @@ function resolvePaths(api, baseUrl, assetsDir) {
     outputDir: api.resolve(baseUrl),
     staticDir: api.resolve(baseUrl),
     assetsDir: api.resolve(path.join(baseUrl, assetsDir)),
-    indexPath: api.resolve(path.join(baseUrl, "app.html"))
+    indexPath: api.resolve(path.join(baseUrl, process.env.NODE_ENV === "production" ? "app.html" : "index.html"))
   };
 }
 
