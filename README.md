@@ -2,6 +2,11 @@
 
 Add `prerender-spa-plugin` into your Vue application with zero configuration.
 
+![](https://img.shields.io/david/solarliner/vue-cli-plugin-prerender-spa.svg)
+![](https://img.shields.io/david/dev/solarliner/vue-cli-plugin-prerender-spa.svg)
+![](https://img.shields.io/npm/v/vue-cli-plugin-prerender-spa.svg)
+![](https://img.shields.io/github/commits-since/solarliner/vue-cli-plugin-prerender-spa/1.1.1.svg)
+
 **Looking for a co-maintainer**: I'm continuing to maintain this project, hoever
 I still would like help on some of the issues, and generally to help me keep this
 plugin going as it's getting more and more popular. If you think you can help,
