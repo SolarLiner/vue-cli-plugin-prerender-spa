@@ -103,7 +103,8 @@ function createPluginOptions(api, projectOptions) {
       options = JSON.parse(readFileSync(oldConfigPath).toString("utf-8"));
     }
   }
-  return options;
+  // return options; // TODO: Fix #16 permanently
+  return Object.assign(options, { onlyProduction: true }); // Force disable on development build, workaround for #16
 }
 
 function resolvePaths(api, baseUrl, assetsDir) {
