@@ -98,7 +98,7 @@ function createPluginOptions(api, projectOptions) {
     if (existsSync(oldConfigPath)) {
       Object.assign(options, JSON.parse(readFileSync(oldConfigPath).toString("utf-8")));
     }
-  } catch {
+  } catch (err) {
     if (existsSync(oldConfigPath)) {
       options = JSON.parse(readFileSync(oldConfigPath).toString("utf-8"));
     }
