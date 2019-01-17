@@ -1,4 +1,4 @@
-module.exports = [
+const prompts = [
   {
     name: "renderRoutes",
     type: "input",
@@ -32,3 +32,6 @@ module.exports = [
     default: true
   }
 ];
+
+export default prompts;
+module.exports = prompts;
