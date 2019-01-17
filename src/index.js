@@ -51,8 +51,9 @@ function createRenderer(api, projectOptions) {
   const rendererConfig = createRendererConfig(api, projectOptions);
   const renderer = new Renderer(rendererConfig);
   renderer.preServer = Prerenderer => {
-    if (projectOptions.baseUrl) {
-      const prefix = projectOptions.baseUrl;
+    const publicPath = projectOptions.publicPath || projectOptions.baseUrl;
+    if (publicPath) {
+      const prefix = publicPath;
       const server = Prerenderer._server._expressServer;
       server.use((req, res, next) => {
         if (req.url.indexOf(prefix) === 0) {
