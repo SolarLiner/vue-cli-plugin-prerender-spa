@@ -1,15 +1,18 @@
 //@ts-check
-const { exists, existsSync, readFileSync } = require("fs");
-const path = require("path");
+import { exists, existsSync, readFileSync } from "fs";
+import { extname, join, basename } from "path";
 
-const PrerenderSPAPlugin = require("prerender-spa-plugin");
-const Renderer = PrerenderSPAPlugin.PuppeteerRenderer;
+import PrerenderSPAPlugin, { PuppeteerRenderer } from "prerender-spa-plugin";
+const Renderer = PuppeteerRenderer;
 
 const CONFIG_OBJ_PATH = "pluginOptions.prerenderSpa";
 
-module.exports = (api, projectOptions) => {
+export default entry;
+module.exports = entry;
+
+function entry(api, projectOptions) {
   api.chainWebpack(chain(api, projectOptions));
-};
+}
 
 function chain(api, projectOptions) {
   return config => {
@@ -25,8 +28,8 @@ function chain(api, projectOptions) {
       renderer,
       postProcess: renderedRoute => {
         const route = renderedRoute.route;
-        if (route[route.length - 1] !== "/" && path.extname(route) === "") {
-          renderedRoute.outputPath = path.join(paths.outputDir || paths.staticDir, `${route}.html`);
+        if (route[route.length - 1] !== "/" && extname(route) === "") {
+          renderedRoute.outputPath = join(paths.outputDir || paths.staticDir, `${route}.html`);
         }
         const userPostProcess =
           options.postProcess && typeof options.postProcess === "function" ? options.postProcess : noop;
@@ -61,9 +64,9 @@ function createRenderer(api, projectOptions) {
     if (projectOptions.pages) {
       const server = Prerenderer._server._expressServer;
       server.get("*", (req, res, next) => {
-        if (!path.extname(req.url)) {
+        if (!extname(req.url)) {
           const filePath = api.resolve(
-            `${projectOptions.outputDir}${req.url}${path.basename(req.url) ? ".html" : "index.html"}`
+            `${projectOptions.outputDir}${req.url}${basename(req.url) ? ".html" : "index.html"}`
           );
           exists(filePath, exists => (exists ? res.sendFile(filePath) : next()));
           return;
@@ -111,8 +114,8 @@ function resolvePaths(api, baseUrl, assetsDir) {
   return {
     outputDir: api.resolve(baseUrl),
     staticDir: api.resolve(baseUrl),
-    assetsDir: api.resolve(path.join(baseUrl, assetsDir)),
-    indexPath: api.resolve(path.join(baseUrl, process.env.NODE_ENV === "production" ? "app.html" : "index.html"))
+    assetsDir: api.resolve(join(baseUrl, assetsDir)),
+    indexPath: api.resolve(join(baseUrl, process.env.NODE_ENV === "production" ? "app.html" : "index.html"))
   };
 }
 
