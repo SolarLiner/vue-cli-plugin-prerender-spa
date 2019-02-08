@@ -1,4 +1,7 @@
-module.exports = (api, options) => {
+export default generate;
+module.exports = generate;
+
+function generate(api, options) {
   api.onCreateComplete(() => {
     const fs = require("fs");
 
