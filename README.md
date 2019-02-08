@@ -197,7 +197,7 @@ Here's an example nginx configuration snippet:
 
 ```nginx
 location / {
-try_files $url $url/index.html $url.html /app.html
+try_files $uri $uri/index.html $uri.html /app.html;
 }
 ```
 
