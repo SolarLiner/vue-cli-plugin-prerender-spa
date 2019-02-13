@@ -142,7 +142,7 @@ allows you to provide your own function if you need to.
 Add a `postProcess` option into your `vue.config.js` file to provide a custom
 post-processing function to run on every build.
 
-Exemple configuration:
+Example configuration:
 
 ```js
 // vue.config.js
