@@ -23,7 +23,7 @@
   "files": [
     "index.js",
     "prompts.js",
-    "generator",
+    "generator.js",
     "README.md",
     "LICENSE"
   ],
