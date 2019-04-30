@@ -225,6 +225,14 @@ job itself - rather, it is recommended to switch to a Node.js + Puppeteer
 image where you can just use your `install && build` workflow without any
 additional configuration. I personally use the `alekzonder/puppeteer` image.
 
+If you do decide on using alekzonder/puppeteer and you want to install global npm packages. The following commands can be used prior to the installation of your required global package to ensure that you do not receive an `EACCES: permission denied, access '/usr/local/lib/node_modules'` error. I have tested this using Gitlab CI.
+
+```
+- mkdir ~/.npm-global
+- npm config set prefix '~/.npm-global'
+- npm install -g @vue/cli-service-global
+```
+
 ### Compatibility with other Vue CLI plugins
 
 This plugin should be compatible with any plugin that doesn't add a `mounted()`
