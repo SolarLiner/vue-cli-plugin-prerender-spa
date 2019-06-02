@@ -134,6 +134,35 @@ root directory of the project; where you can specify custom options for the
 Puppeteer renderer. It will be merged, and its options will overwrite those set
 by the plugin itself.
 
+Other way to set custom configuration for the Puppeteer renderer is to use `customRendererConfig`
+dictionary of possible [Puppeteer launch options](https://github.com/GoogleChrome/puppeteer/blob/master/docs/api.md#puppeteerlaunchoptions).
+
+Example configuration of debugging your site with Chrome DevTools opened automatically:
+
+```js
+// vue.config.js
+
+module.exports = {
+  pluginOptions: {
+    prerenderSpa: {
+      registry: undefined,
+      renderRoutes: [
+        '/',
+        '/about'
+      ],
+      useRenderEvent: true,
+      onlyProduction: true,
+      
+      headless: false, // <- this could also be inside the customRendererConfig
+      customRendererConfig: 
+      {
+        args: ["--auto-open-devtools-for-tabs"]
+      }
+    }
+  }
+}
+```
+
 ### User post processing function
 
 Pupeteer allows to postprocess the HTML after it's been snapshot, and the plugin
