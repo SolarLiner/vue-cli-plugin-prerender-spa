@@ -17,6 +17,7 @@ function entry(api, projectOptions) {
 function chain(api, projectOptions) {
   return config => {
     const options = createPluginOptions(api, projectOptions);
+    if(!options || options.disable) return // If there aren't any options or disabled, don't run
     if (options.onlyProduction && process.env.NODE_ENV !== "production") {
       return;
     }
@@ -95,7 +96,7 @@ function createRendererConfig(api, projectOptions) {
 }
 
 function createPluginOptions(api, projectOptions) {
-  let options;
+  let options = {}; // Fixes Object.assign error if there's no 'pluginOptions.prerenderSpa' in vue.config.js
   let oldConfigPath = api.resolve(".prerender-spa.json");
   try {
     options = pickle(projectOptions, CONFIG_OBJ_PATH);
@@ -107,6 +108,7 @@ function createPluginOptions(api, projectOptions) {
       options = JSON.parse(readFileSync(oldConfigPath).toString("utf-8"));
     }
   }
+  if(Object.entries(options).length === 0) return undefined // No options at all, therefore don't return any options.
   // return options; // TODO: Fix #16 permanently
   return Object.assign(options, { onlyProduction: true }); // Force disable on development build, workaround for #16
 }
