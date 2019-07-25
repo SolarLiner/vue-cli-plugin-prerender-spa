@@ -5,7 +5,7 @@ Add `prerender-spa-plugin` into your Vue application with zero configuration.
 ![](https://img.shields.io/david/solarliner/vue-cli-plugin-prerender-spa.svg)
 ![](https://img.shields.io/david/dev/solarliner/vue-cli-plugin-prerender-spa.svg)
 ![](https://img.shields.io/npm/v/vue-cli-plugin-prerender-spa.svg)
-![](https://img.shields.io/github/commits-since/solarliner/vue-cli-plugin-prerender-spa/1.1.3.svg)
+![](https://img.shields.io/github/commits-since/solarliner/vue-cli-plugin-prerender-spa/1.1.6.svg)
 
 **Looking for a co-maintainer**: I'm continuing to maintain this project, hoever
 I still would like help on some of the issues, and generally to help me keep this
@@ -134,6 +134,35 @@ root directory of the project; where you can specify custom options for the
 Puppeteer renderer. It will be merged, and its options will overwrite those set
 by the plugin itself.
 
+Other way to set custom configuration for the Puppeteer renderer is to use `customRendererConfig`
+dictionary of possible [Puppeteer launch options](https://github.com/GoogleChrome/puppeteer/blob/master/docs/api.md#puppeteerlaunchoptions).
+
+Example configuration of debugging your site with Chrome DevTools opened automatically:
+
+```js
+// vue.config.js
+
+module.exports = {
+  pluginOptions: {
+    prerenderSpa: {
+      registry: undefined,
+      renderRoutes: [
+        '/',
+        '/about'
+      ],
+      useRenderEvent: true,
+      onlyProduction: true,
+
+      headless: false, // <- this could also be inside the customRendererConfig
+      customRendererConfig:
+      {
+        args: ["--auto-open-devtools-for-tabs"]
+      }
+    }
+  }
+}
+```
+
 ### User post processing function
 
 Pupeteer allows to postprocess the HTML after it's been snapshot, and the plugin
@@ -142,7 +171,7 @@ allows you to provide your own function if you need to.
 Add a `postProcess` option into your `vue.config.js` file to provide a custom
 post-processing function to run on every build.
 
-Exemple configuration:
+Example configuration:
 
 ```js
 // vue.config.js
@@ -197,7 +226,7 @@ Here's an example nginx configuration snippet:
 
 ```nginx
 location / {
-try_files $url $url/index.html $url.html /app.html
+try_files $uri $uri/index.html $uri.html /app.html;
 }
 ```
 
@@ -224,6 +253,14 @@ system dependencies and configuration that might not be efficient to add to the
 job itself - rather, it is recommended to switch to a Node.js + Puppeteer
 image where you can just use your `install && build` workflow without any
 additional configuration. I personally use the `alekzonder/puppeteer` image.
+
+If you do decide on using alekzonder/puppeteer and you want to install global npm packages. The following commands can be used prior to the installation of your required global package to ensure that you do not receive an `EACCES: permission denied, access '/usr/local/lib/node_modules'` error. I have tested this using Gitlab CI.
+
+```
+- mkdir ~/.npm-global
+- npm config set prefix '~/.npm-global'
+- npm install -g @vue/cli-service-global
+```
 
 ### Compatibility with other Vue CLI plugins
 
