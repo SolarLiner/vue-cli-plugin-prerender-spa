@@ -46,7 +46,12 @@ function astMutAddEventPolyfill(source) {
   const polyfill = parse(`function createNewEvent(eventName) {
     var event;
     if (typeof(Event) === 'function') {
-        event = new Event(eventName);
+        try {
+          event = new Event(eventName);
+        } catch (e) {
+          event = document.createEvent('Event');
+          event.initEvent(eventName, true, true);
+        }
     } else {
         event = document.createEvent('Event');
         event.initEvent(eventName, true, true);
