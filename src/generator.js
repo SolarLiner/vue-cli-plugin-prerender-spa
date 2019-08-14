@@ -106,6 +106,10 @@ function astInsertMountedHook(obj) {
 }
 
 function astInsertEventInBlock(astBlock) {
+  // Check whether similar event-dispatching already exists (make function idempotent)
+  if (astBlock.body.filter(n => types.astNodesAreEquivalent(n, astDispatchRenderEvent())).length > 0) {
+    return Object.assign({}, astBlock);
+  }
   const retIdx = astBlock.body.findIndex(n => n.type === "ReturnStatement");
   if (retIdx === -1) {
     return b.blockStatement([...astBlock.body, astDispatchRenderEvent()]);
