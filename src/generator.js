@@ -29,14 +29,14 @@ function generate(api, options) {
       fs.writeFileSync(mainPath, print(orig).code, { encoding: "utf-8" });
     }
   });
-
+  const { registry, ...prerenderSpa } = options;
   api.extendPackage({
     devDependencies: {
       "prerender-spa-plugin": "^3.2.1"
     },
     vue: {
       pluginOptions: {
-        prerenderSpa: options
+        prerenderSpa
       }
     }
   });
