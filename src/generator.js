@@ -124,5 +124,9 @@ function astInsertEventInBlock(astBlock) {
 }
 
 function astDispatchRenderEvent() {
-  return b.expressionStatement(b.callExpression(b.identifier("createNewEvent"), [b.literal("x-app-rendered")]));
+  return b.expressionStatement(
+    b.callExpression(b.memberExpression(b.identifier("document"), b.identifier("dispatchEvent")), [
+      b.callExpression(b.identifier("createNewEvent"), [b.literal("x-app-rendered")])
+    ])
+  );
 }
