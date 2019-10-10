@@ -230,6 +230,22 @@ try_files $uri $uri/index.html $uri.html /app.html;
 }
 ```
 
+Apache 2.4 .htaccess: 
+```
+DirectorySlash Off
+RewriteEngine On
+RewriteBase /
+
+RewriteRule ^index\.html$ - [L]
+
+RewriteCond %{DOCUMENT_ROOT}%{REQUEST_URI}.html -f
+RewriteRule ^(.+)$  /$1.html [L,QSA]
+
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule . /app.html [L,QSA]
+```
+
 And an example Firebase configuration (taken from https://stackoverflow.com/a/51218261):
 
 ```json
