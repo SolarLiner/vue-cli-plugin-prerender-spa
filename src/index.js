@@ -26,6 +26,7 @@ function chain(api, projectOptions) {
     const prerenderOptions = {
       ...paths,
       routes: options.renderRoutes,
+      server: options.server,
       renderer,
       postProcess: renderedRoute => {
         const route = renderedRoute.route;
