@@ -30,7 +30,7 @@
   "private": false,
   "dependencies": {
     "prerender-spa-plugin": "^3.2.1",
-    "recast": "^0.18.2"
+    "recast": "^0.20.3"
   },
   "devDependencies": {
     "@babel/cli": "^7.2.3",
